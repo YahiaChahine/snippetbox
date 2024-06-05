@@ -3,6 +3,8 @@ package main
 import (
 	"net/http"
 	"path/filepath"
+
+	"github.com/justinas/alice"
 )
 
 func (app *application) routes() http.Handler {
@@ -14,8 +16,8 @@ func (app *application) routes() http.Handler {
 	fileServer := http.FileServer(neuteredFileSystem{http.Dir("./static")})
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	//return app.logRequest(secureHeaders(mux))
-	return mux
+	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
+	return standard.Then(mux)
 }
 
 type neuteredFileSystem struct {
