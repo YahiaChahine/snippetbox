@@ -14,7 +14,8 @@ func (app *application) routes() http.Handler {
 	fileServer := http.FileServer(neuteredFileSystem{http.Dir("./static")})
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	return secureHeaders(mux)
+	//return app.logRequest(secureHeaders(mux))
+	return mux
 }
 
 type neuteredFileSystem struct {
